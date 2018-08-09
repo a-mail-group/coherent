@@ -1,0 +1,3 @@
+echo "test 1" >/dev/color2
+: if whatever
+echo "test 2" >/dev/color2 # with online comment

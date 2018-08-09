@@ -1,0 +1,294 @@
+Steve's cc386 compiler change log
+Begun 1/13/94, earlier logs in Changes.1993.
+
+Thu Jan 13 14:04:54 1994 PST
+coh/cc.c
+		V4.3.8: Changes for Greg Comeau re Comeau C++, as follows.
+		Changed -VCPLUS to set variant only rather than toggle.
+		Added -G option, passed to ld to suppress global/common
+		warnings.
+		Added -VCOMEAU option which sets -VCPLUS and invokes ld with -G.
+		V4.3.9: fixed -VCPP to work correctly again (same as -VCPPE
+		but with #line items).  -VCOMEAU with -E now resets -VCPPE,
+		so #line items appear in the output as desired.
+
+Wed Jan 26 12:49:15 1994 PST
+*/Makefile
+		Expanded $< refs, the 4.2r05 /bin/make no longer allows it.
+h/cc0.h
+		V4.4.0: bumped i386 NDLEV from 256 to 512.  This fixes a cpp
+		"macro expansion buffer overflow in dspush" error reported
+		by fred when compiling an X application.
+			#define	M0	0
+			#define	M_1	(M_0 +1)
+			...
+			#define	M_63	(M_62 +1)
+			static a[] = { M63,  0 };
+		was essentially the offending source.
+
+Wed Feb  2 13:43:18 1994 PST
+n2/i386/outcoff.c
+		V4.4.1: user Binh Pham <binhp@sa-htn.valmet.com> reported
+		"cc -g" produced incorrect sizes for some .common data items.
+		In particular, commons with "pointer to ..." and "function
+		returning ..." derived types put the size of the base type
+		in the object rather than the size of the derived type;
+		thus, a program with global declaration "char *cp;"
+		produced a definition for cp with size 1 rather than 4.
+		Fixed by adding "flag" to outdloc() loop and checking it when
+		setting cvalue.  Also, conditionalized out other code which
+		reset cvalue for arrays, made unnecessary by this fix.
+
+Fri Feb  4 15:14:08 1994 PST
+coh/cc.c
+cpp/cpp.c
+		V4.4.2 (cpp V4.1): minor changes for Comeau.
+
+Wed Feb  9 10:53:00 1994 PST
+n0/get.c
+		V4.4.3 (cpp V4.2): fixed -VCPLUS bug for Comeau.
+		Previously, -VCPLUS compilations mishandled a #whatever
+		control line which was immediately preceded by a
+		//-delimited online comment.
+
+Wed Mar  2 15:40:21 1994 PST
+n2/i386/outcoff.c
+		V4.4.4: in outdlab(), added line to set db_seg after
+		new_sym() call in the struct/union/enum code.
+		User Dean Edmonds (deane@deane.teleride.on.ca) reported that
+		the cc -g COFF symbol table was incorrect for globals
+		of type struct/union/enum (or pointer to struct/union/enum,
+		etc.).  Actually, code within the compiled module was correct,
+		but references to the incorrect globals from other modules
+		were incorrect in the bound executable (because the COFF
+		symbol table entry in the defining module was wrong).
+
+Tue Mar  8 13:34:48 1994 PST
+n0/size.c
+n0/i386/bind.c
+		V4.4.5: Dean Edmonds (cf. V4.4.4 above) got an internal
+		compiler error with a bitfield using an unresolved enum
+		as base type.  Changed bind.c/faligntype() to give a more
+		reasonable cerror() for this case.  Changed size.c/unksize()
+		to print a more reasonable error message when sp->s_id is NULL.
+
+Tue Mar 15 11:38:08 1994 PST
+n0/get.c
+		V4.4.6:  hal reported that line number reporting was incorrect
+		for programs with C++-style comments compiled with cc -VCPLUS.
+		I introduced this bug with the V4.4.3 change on 2/9/94, oops.
+
+Fri Mar 18 14:07:05 1994 PST
+cpp/cpp.c
+		(cpp V4.3): In COMEAU section, added "setvariant(VNOWARN);"
+		for compatability with cc.  Comeau pointed out that "cc -E"
+		suppressed warnings but "/lib/cpp" did not if COMEAU.
+
+		
+Tue Apr 26 15:14:39 1994 PDT
+cpp/cpp.c
+		(cpp V4.4): Withdrew change of 3/18/94 above per request
+		of Comeau.
+
+Tue Apr 26 17:01:11 1994 PDT
+n0/double.c
+		V4.4.7: Changed IEEE values of poshuge and neghuge to the
+		IEEE representations of +- Infinity.  Previously, fp exponent
+		overflow produced the result [7F FF FF FF FF FF FF FF],
+		which represents a NaN; now it produces [7F F0 0 0 0 0 0 0],
+		which represents +Infinity.  The DECVAX values (currently
+		unused) remain unchanged.
+
+Tue Apr 26 18:06:52 1994 PDT
+h/cc0.h
+		V4.4.8: Added macros getdope() and goaltype() to clarify
+		cvdope[] refs.
+n0/dope.c
+		Corrected and clarified cvdope[] comment, no functional change.
+n0/expr.c
+n0/fold.c
+		Changed cvdope[] references to use macros added to cc0.h above.
+
+Wed Apr 27 16:55:43 1994 PDT
+n1/i386/mtree2.c
+		V4.4.9: in modargs(), added code to insert conversions for
+		noncomputation arg types.  Previously, code like
+			fn(arg, (short)long_variable);
+		pushed the low-order bits of long_variable without clearing
+		the upper bits.  Now, modargs() inserts the appropriate
+		conversion node if the arg type is not computational.
+
+Wed Apr 27 18:29:26 1994 PDT
+n1/i386/tables/neg.t
+		V4.5.0: changed the node type of the primary negation entry
+		from LONG to DWORD.  User Eric Bruno (eribruno@netcom.com)
+		reported that code (in tcl7.3/tclTest.c) like
+			g((int *)-i);
+		generated a no match.  The parser observes that types int
+		(for -i) and (int *) represent the same bits, so it changes
+		the node type of -i arg to PTR, which means the negation
+		code table must support node type PTR even though the negation
+		operator does not really yield a pointer result.  Yuck.
+
+Thu Apr 28 13:33:46 1994 PDT
+n1/i386/mtree2.c
+		V4.5.1: Fixed a bug reported by Karl Dahlke, namely
+		a no match botch on a compare of char vs. char bitfield.
+		cc0/i386/bind.c/noconvert() passes a relation with byte args
+		or word args on both sides to cc1 as is,
+		for efficiency in the generated code.
+		But if either side of the relation is a byte or word bitfield,
+		modefld() modifies it to extract to a computational type.
+		Since the relop.t code table does not support byte::dword or
+		word::dword relations, the modified relation would not match.
+		Now modoper() inserts a conversion node to kludge the arg type
+		back to a byte or word type.
+
+Tue May  3 20:55:21 1994 PDT
+h/cc0.h
+		In INFO typedef, corrected member "struct sym *i_sp[];"
+		to "struct symbol *i_sp[];".  This misprint went unnoticed for
+		many, many years before cropping up with the V4.5.2 fix below.
+n0/expr.c
+		V4.5.2: Changed csmemb() to complain on members of forward
+		referenced structs or unions.  Previously, if "struct t *tp;"
+		was declared but struct t was never defined, a reference like
+		"tp->a" bogusly resolved to the offset of member a in some
+		other struct.
+		Also, nonsubstantive changes to whitespace for readability.
+
+Wed May 11 11:07:31 1994 PDT
+common/talloc.c
+h/cc0.h
+h/cc1.h
+h/cc2.h
+h/cc3.h
+		Added "#include <stdlib.h>" to headers, because malloc()
+		definition is no longer in <stdio.h>.  Deleted declaration
+		in talloc.c.  No substantive changes.
+
+Sat May 28 22:58:18 1994 PDT
+n2/i386/outcoff.c
+		V4.5.3: changed T_NULL to T_VOID for DT_VOID entry in
+		debug type mapping table, after appropriate change to <coff.h>
+		as suggested by udo.
+
+Tue May 31 15:55:27 1994 PDT
+n2/i386/outcoff.c
+		Changed FILEHDR to FILHDR as per corresponding <coff.h> change.
+
+Thu Jun  9 16:47:25 1994 PDT
+.prof.386
+Makefile
+*/Makefile
+n1/i386/Makefile
+		Rewrote Makefiles to use library dependencies rather than
+		leaving object files around.
+coh/tabgen.c
+		Added "-t tabledir" option, required because make no longer
+		allows $< to expand target dependencies by SRCPATH.
+n0/cc0.c
+		V4.5.3: Corrected syntax in "exit (cond) ? OK : BAD;";
+		compiler complained about illegal use of void type
+		due to new <stdlib.h> inclusion.
+
+Thu Jun 30 13:05:13 1994 PDT
+n2/i386/outcoff.c
+		V4.5.4: Changed outdlab() slightly to fix debug information
+		bug reported by Zahemszky Gabor <zgabor@CoDe.hu>.
+		cc2 was giving an "incomplete debug information" botch
+		under certain circumstances: when the input stream contained
+		multiple instances of debug information for an array, the
+		array dimension recalculation on an entry after the first
+		could incorrectly clobber the debug symbol name.  Example:
+			#define	ID	t1slot
+			struct tmp1 { char tag; } * ID [16];
+			dummy() { donothing( ID [ 3 ] ); }
+		Shorter ID names (e.g. tslot) did not produce a fatal error,
+		but the debug information for the ID was incorrect.
+		Also changed several instances of COFF symbol name length 8
+		to manifest constant SYMNMLEN as defined in <coff.h>.
+
+Mon Jul 11 16:34:11 1994 PDT
+n0/expr.c
+		V4.5.5: in build(), changed conversion code to kludge
+		around call to psize() for pointer to function.
+		User John Dhuse reported 5/17/94 that e.g.
+			struct s { void (*fnp)(); } *p;
+			extern void dummy();
+			int bool;
+
+			p->fnp = (bool) ? dummy : NULL;
+		gave a bogus "sizeof function" error previously.
+
+Mon Jul 18 09:40:19 1994 PDT
+n0/fold.c
+		V4.5.6:  Dmitry L. Gringauz <dlg@golem.com> reported 7/15/94
+		that e.g.:
+			double t = 0.;
+			printf("%s\n", (t > -2147483648L) ? "OK" : "oops");
+		gave the unexpected result.  cc lexes signed integer constants
+		as NEG (unary minus) applied to a positive integer constant.
+		For INT_MIN or LONG_MIN with twos complement arithmetic,
+		lex() sees that the integer constant (e.g. 2147483648[L]
+		for 32-bit arithmetic) is not a legal int [long] value
+		and therefore types it as unsigned int [long].
+		The new code added to fold() kludges the folded result type
+		back to signed int or long.
+
+Tue Jul 19 15:08:11 1994 PDT
+n0/fold.c
+n0/lex.c
+		V4.5.7: Withdrew above fold.c change after nigel convinced
+		me it was wrongheaded.  Instead, lex.c now issues a promotion
+		warning on the constant 2147483648.
+
+Fri Aug 26 10:58:36 1994 PDT
+h/cc0.h
+		V4.5.8: bumped NDBUF from 4K to 8K after Ed reported that
+		the macro expansion buffer overflowed on macro htonl()
+		from <netinet/in.h>.
+
+Sun Sep  4 09:51:28 1994 PDT
+coh/cc.c
+		V4.5.9:  Dmitry L. Gringauz <dlg@golem.com> reported
+		a problem when compiling multiple source files, e.g.
+			cc -c a.c b.c c.c
+		If b.c contained errors, bogus errors sometimes appeared
+		in the next file or several files.
+		This was due to incorrect resetting of memory tempfile
+		buffer pointer outbufp after the error, it did not happen with
+		disk-based tempfiles.
+
+Tue Sep 13 12:45:00 1994 PDT
+n0/get.c
+		V4.6.0: Changed get() as requested by chris so that e.g.
+			main(){}<EOF>
+		with no '\n' before the EOF now works.  A -VCPLUS compilation of
+			// C++-style online comment <EOF>
+		now works too, otherwise behavior should be unchanged.
+
+Tue Sep 20 13:05:21 1994 PDT
+n0/bind.c
+		V4.6.1: Changed mysizes[T_DOUBLE] from 8 to 4.  User Fred Smith
+		fredex@fcshome.stoneham.ma.us] reported a problem which
+		led to the observation that gcc and cc gave different results
+		for structure alignment of double members; gcc correctly
+		made them dword-aligned, cc previously made them qword-aligned
+		but now makes them dword-aligned.  Cf. iBCS2, p. 3-4.
+
+Thu Oct 13 13:09:15 1994 PDT
+n0/bind.c
+		V4.6.2: Corrected change of 9/20/94 above, after Fred Smith
+		pointed out it was incorrect.  Changed the alignment mask
+		computations in fieldalign() so that double struct members
+		are dword-aligned, not qword-aligned.
+
+Thu Dec 15 09:01:39 1994 PST
+h/ops.h
+		V4.6.3: changed NARGS from 32 to 64, to allow up to 64
+		parameters in a function definition.  ANSI 2.2.4.1 mandates
+		minimum translation limits of 31 parameters in a function
+		definition and 31 args in a function call, and the old limit of
+		32 mets that.  Changed it anyway, for the benefit of user
+		Sanjay Lal <lals@ecf.toronto.edu || lals@lal.gts.org>.

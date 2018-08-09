@@ -1,0 +1,99 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    bin:1.2; strict;
+comment  @ * @;
+
+
+1.2
+date     93.01.29.11.17.40;  author bin;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     93.01.29.11.17.15;  author bin;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@steve 1/29/93
+Initial MWC RCS revision.
+@
+
+
+1.2
+log
+@steve 1/29/93
+Corrected mode for unbuffered terminal input.
+@
+text
+@/*
+ * libc/stdio/_finit.c
+ * ANSI-compliant C standard i/o library internals.
+ * _fginit(), _fpinit()
+ * Initialize file for i/o.
+ */
+
+#include <stdio.h>
+#include <errno.h>
+
+/*
+ * The get and put function pointers in a FILE
+ * initially contain &_fginit and &_fpinit.
+ * The first get/put on the stream calls _f[gp]init()
+ * which calls finit().
+ * finit() calls setvbuf() to initialize stream buffering
+ * and to reset the get and put functions appropriately.
+ */
+static
+void
+finit(stream) register FILE *stream;
+{
+	register int mode, sav;
+
+	if (stream->_mode != _MODE_UNINIT)
+		return;				/* setvbuf already called */
+	sav = errno;			/* because isatty() can set errno */
+	mode = (!isatty(fileno(stream))) ? _IOFBF
+		    : (stream == stdout) ? _IOLBF : _IONBF;
+	if (setvbuf(stream, NULL, mode, (size_t)BUFSIZ) == 0)
+		return;				/* buffered or line buffered */
+	setvbuf(stream, NULL, _IONBF, (size_t)0);	/* unbuffered */
+	errno = sav;
+}
+
+/*
+ * Initialize and get.
+ */
+int
+_fginit(stream) register FILE *stream;
+{
+	finit(stream);
+	return (*stream->_f2p->_gt)(stream);
+}
+
+/*
+ * Initialize and put.
+ */
+int
+_fpinit(c, stream) register char c; register FILE *stream;
+{
+	finit(stream);
+	return (*stream->_f2p->_pt)(c, stream);
+}
+
+/* end of libc/stdio/_finit.c */
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d28 2
+a29 1
+	mode = (isatty(fileno(stream)) && stream==stdout) ? _IOLBF : _IOFBF;
+@

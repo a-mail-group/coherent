@@ -1,0 +1,54 @@
+From gort!hal  Thu Jan 12 23:02:00 1995 remote from mwc
+Received: by jsbach.mwc.com (smail2.5.3-coh) id AA00377; 12 Jan 95 23:02:00 GMT (Thu)
+Received: by mwc.com (smail2.5.3-coh) id AA01925; 12 Jan 95 22:00:58 GMT (Thu)
+Received: by gort.mwc.com (smail2.5.3-coh) id AA04937; 12 Jan 95 16:04:00 CST (Thu)
+Subject: fdisk and drive parameters
+To: steve
+Date: Thu, 12 Jan 1995 16:04:00 +0100 (CST)
+From: "Hal Snyder" <hal@gort.mwc.com>
+Cc: rs, louis, udo, butzen
+Reply-To: hal@mwc.com
+X-Mailer: ELM [version 2.4 PL23]
+Content-Type: text
+Content-Length: 1946      
+Message-Id: <9501121604.AA04937@gort.mwc.com>
+
+By now, you should have fdisk.tgz from /usr/hal on the gateway.
+
+Here is a clarification (?) of the startup problems:
+
+1.  During installation from the boot floppy, hard disk device drivers
+    are configured using /conf/kpatch and the patch driver.  *All*
+    such settings must be propagated to secondary (using /conf/patch)
+    and tertiary (using /cohtune_ent or equivalent) kernels, and there
+    were several omissions in earlier releases.
+
+2.  For most older BIOSes, hard disk drive parameters used by COH for
+    *bootable* partitions must agree exactly with the BIOS on number of
+    heads and sectors per track, but may have a differing number of
+    cylinders as long as 1) the number of cylinders specified in the
+    BIOS does not exceed the drive capacity, and 2) the highest cylinder
+    number in the bootable partition does not exceed the last cylinder
+    specified in BIOS.  This principle applies to IDE and SCSI drives.
+
+3.  For non-bootable partitions, and (maybe?) with a few new BIOSes with
+    bootable partitions, drive parameters do not matter except for
+    compatibility with fdisk programs from other OS's, since partition
+    start and end are redundandtly encoded as block numbers.
+
+BIOS parameters are available using "info" at the COH boot prompt.
+Physical drive parameters are available using SCSI Mode Sense, and on
+newer IDE drives using a similar command.
+
+What a pain.
+
+It no longer is appropriate to simply say we are going to modify a partition
+table entry, go with it or abort installation, the way older fdisks operated.
+We need more flexibility, in order to anticipate situations that we cannot
+test at MWC.  We need to make fdisk more flexible, and more informative
+about the choices it offers and the actions it is taking.
+-- 
+Hal Snyder, M.D.		hal@mwc.com			itis
+Mark Williams Company     	(708)-291-6700 (voice)		foras
+60 Revere Drive, Suite 250	(708)-291-6750 (fax)		rixsatis
+Northbrook, IL 60062

@@ -1,0 +1,49 @@
+# Generated from mkdev.sh on Tue Jul 26 13:08:25 1994 PDT
+# aha/mkdev - get SCSI device info
+# Revised: Tue Mar  1 14:36:52 1994 CST
+
+DEVDIR=/dev
+
+. /usr/lib/shell_lib.sh
+COMMAND_NAME=$0
+source_path $0 "HOME_DIR="
+parent_of $HOME_DIR "CONF_DIR="
+
+. $CONF_DIR/bin/conf_lib.sh
+
+
+# Things to do:
+
+#	Ask if the driver should be enabled.
+#
+#	Configure host adapter.
+
+echo "\nAdaptec 154x ALTERNATE driver, SCSI hard disk, no tape."
+set_enable_status aha
+
+# Hardware configuration of HBA.
+
+read_input "Change host adapter configuration" ANS "n" require_yes_or_no
+if is_yes $ANS; then
+	echo "
+If you are not sure how to set any of the following parameters, just hit
+<Enter> to keep the current setting.  Further information can be found
+in your host adapter documentation, as well as in COHERENT files
+/etc/conf/mtune and /etc/conf/aha/Space.c.
+"
+	while : ; do
+
+		tune HAI_AHABASE_SPEC	"Host adapter base i/o port address"
+		tune HAI_AHAINTR_SPEC	"Host adapter interrupt number"
+		tune HAI_AHADMA_SPEC	"Host adapter DMA channel"
+
+		tune AHA_SD_HDS_SPEC	"# of heads on hard drive (translation mode)"
+		tune AHA_SD_SPT_SPEC	"sectors per track on hard drive (translation mode)"
+
+		read_input "\nIs host adapter configuration correct" ANS "y" \
+		  require_yes_or_no
+		is_yes $ANS && break
+	done
+fi
+
+exit 0

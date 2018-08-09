@@ -1,0 +1,30 @@
+Subject: fdisk
+
+Revised source and compiled object in mwc!~/steve/fdisk[.c]
+by the time you see this, uucp willing.
+
+Hal,
+
+I found the fdisk.c in $uupub on the gateway, thanks.
+It did include several differences from the source I found previously
+in /usr/hal/fdisk.gtz.
+
+The new one still did not compile, drive_info() was redeclared,
+duplicating a declaration in <scsiwork.h> in my header suite,
+have your headers changed?  I changed drive_info -> driveinfo to compile it.
+
+Added missing (void) in the ANSI prototype parameter list of print_ptable().
+
+> Steve - I made a typo when correcting a default value offered in fdisk.c
+> around line 585.  Here is the new text:
+> ...
+
+The code supplied in your mail was identical to the code in fdisk.c from
+the gateway, apparently you had fixed this already?  If not, please advise.
+
+Please diff and eyeball the changes, thanks.
+
+John,
+
+The changes are a shot in the dark with no test bed here, please let me
+and hal know what you find.  Thanks!

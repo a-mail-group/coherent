@@ -1,0 +1,11 @@
+Subject: [nt]roff, fwtable bits
+
+Posted new nroff and troff bits V4.1.2 to mwc!~/steve/ and to lepanto!~/,
+as [nt]roff.gz.
+
+At fred's request, ".sy whatever" now passes "whatever" to the system
+and number register "$$" contains the current process id.
+These are not referenced in Emerson & Paulsell.
+
+hal: these should replace the distribution verions of [nt]roff,
+unless you hear otherwise from fred.

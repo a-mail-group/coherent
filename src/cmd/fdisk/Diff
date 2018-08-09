@@ -1,0 +1,158 @@
+64 d 63
+< int	Bflag;			/* special patching during installation */
+66 a 66
+> int	Bflag;			/* Special patching during installation	*/
+69 a 70
+> int	cohtuneFlag;		/* cohtune was called.			*/
+73 c 74,75
+< char	drive_x[] = "Drive x";  /* Needs to be written on	*/
+---
+> char	drive_x[] = "Drive x";  /* Needs to be written on.		*/
+> char	drivename[40];		/* Disk drive name.			*/
+94 c 96
+< int	sflag;			/* Readonly.				*/
+---
+> int	sflag;			/* Save boot block to floppy.		*/
+96 c 98
+< int	cohtuneFlag;		/* cohtune was called			*/
+---
+> int	warned;			/* User has been warned about chs.	*/
+98,101 d 99
+< char	drivename[40];		/* Disk drive name.			*/
+< 
+< int	warned;			/* Set if user has been warned about chs */
+< 
+645 a 644,647
+> 	/*
+> 	 * Extract c:h:s from the FDISK_S struct partition info.
+> 	 * Compute the block number from the FDISK_S struct base/size info.
+> 	 */
+657 a 660,678
+> 	/* Compute c:h:s directly from the appropriate block number. */
+> 	nc = sec_to_c(lbkno);
+> 	nh = sec_to_h(lbkno);
+> 	ns = sec_to_s(lbkno);
+> 
+> 	/*
+> 	 * The FDISK_S struct encodes the sector number in six bits
+> 	 * (and uses the other two bits to encode the high two bits
+> 	 * of the cylinder number).
+> 	 * This will obviously be wrong if the sector number is larger than
+> 	 * six bits, which is possible if nspt > 63.
+> 	 * Similarly, the cylinder number cannot be stored correctly if >= 1024.
+> 	 */
+> 	if (nspt > 63 && s != ns && s == (ns & SECMASK))
+> 		s = ns;			/* override incorrect value */
+> 	if (ncyls >= 1024 && c != nc && nc >= 1024)
+> 		c = nc;			/* override incorrect value */
+> 
+> 	/* Consistency check c:h:s value. */
+665,669 d 685
+< 
+< 		nc = sec_to_c(lbkno);
+< 		nh = sec_to_h(lbkno);
+< 		ns = sec_to_s(lbkno);
+< 
+717 a 734,737
+> 		if (yes_no(
+> "Do you want to leave the inconsistent c:h:s partition table entry unchanged"))
+> 			return;
+> 
+734 c 754
+< 			p->p_bsec = ((nc >> 2) & CYLMASK ) | ns;
+---
+> 			p->p_bsec = ((nc >> 2) & CYLMASK ) | (ns & SECMASK);
+738 c 758
+< 			p->p_esec = ((nc >> 2) & CYLMASK ) | ns;
+---
+> 			p->p_esec = ((nc >> 2) & CYLMASK ) | (ns & SECMASK);
+920 c 940
+< void print_ptable ()
+---
+> void print_ptable (void)
+1175 c 1195
+< 		p->p_bsec = (((c % 1024) >> 2) & CYLMASK ) | s;
+---
+> 		p->p_bsec = (((c % 1024) >> 2) & CYLMASK ) | (s & SECMASK);
+1251 c 1271
+< 		p->p_esec = (((c % 1024) >> 2) & CYLMASK) | s;
+---
+> 		p->p_esec = (((c % 1024) >> 2) & CYLMASK) | (s & SECMASK);
+1259 c 1279
+<  * drive_info
+---
+>  * driveinfo
+1265 c 1285
+< void drive_info(void)
+---
+> void driveinfo(void)
+1268 c 1288
+< drive_info()
+---
+> driveinfo()
+1540 c 1560
+< 	int	partchoice;
+---
+> 	int	choice;
+1549 a 1570
+> 	/* Obtain number of cylinders and warn accordingly if >1024. */
+1551 d 1571
+< 
+1569 c 1589
+< 		partchoice = get_int("1) Limit to 1024  2) Continue  3) Quit", 1, 1, 3);
+---
+> 		choice = get_int("1) Limit to 1024  2) Continue  3) Quit", 1, 1, 3);
+1571 c 1591
+< 		switch (partchoice) {
+---
+> 		switch (choice) {
+1589 a 1610,1611
+> 
+> 	/* Obtain number of sectors per track and warn accordingly if >63. */
+1590 a 1613,1646
+> 	if (nspt > 63) {
+> bad_deal2:
+> 		printf(
+> "\nWARNING: The COHERENT disk driver says your disk has %d sectors per track.\n"
+> "Many older BIOSes will not work correctly for a disk with\n"
+> "more than 63 sectors per track.  You have 3 choices:\n"
+> "  1) Force COHERENT to use only 63 sectors per track.\n"
+> "  2) Continue and use %d sectors per track.  This may cause trouble if you\n"
+> "     later run versions of fdisk from DOS or other operating systems.\n"
+> "  3) Quit now and change the CMOS settings for your hard drive by running\n"
+> "     your BIOS hard disk setup.  Choosing this option may cause you to\n"
+> "     lose all data if the disk is already partitioned.\n\n",
+> 		    nspt, nspt);
+> 
+> 		choice = get_int("1) Limit to 63  2) Continue  3) Quit", 1, 1, 3);
+> 
+> 		switch (choice) {
+> 		case 1:
+> 			nspt = 63;
+> 			break;
+> 
+> 		case 2:
+> 			break;
+> 
+> 		case 3:
+> 			exit(1);
+> 			break;
+> 
+> 		default:
+> 			goto bad_deal2;		/* Should never get here */
+> 			break;
+> 		}
+> 	}
+> 
+1598 c 1654
+< 		drive_info();
+---
+> 		driveinfo();
+1743 c 1799
+< 			drive_info();
+---
+> 			driveinfo();
+1753 c 1809
+< 			drive_info();
+---
+> 			driveinfo();

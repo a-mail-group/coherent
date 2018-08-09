@@ -1,0 +1,7 @@
+date >>/Read_me
+me ../i386/version /Read_me
+cc -c -o lib/main.o `../i386/version` ../coh.386/main.c
+cd lib; ar r k386.a main.o; cd ..
+bin/idmkcoh -o /testcoh
+sync
+echo 'Done!'

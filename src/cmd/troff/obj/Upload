@@ -1,0 +1,19 @@
+echo Making:
+make
+echo Stripping:
+make strip
+echo Queueing:
+# for i in fwtable nroff troff
+for i in nroff troff
+do
+	mv $i $i.sav			# save it
+	cp $i.sav $i			# copy for gzip
+	gzip $i				# gzip it
+	su steve uucp -rC $i.gz mwc\!~/steve/		# queue it to mwc
+	su steve uucp -rC $i.gz mwc\!lepanto\!~/	# queue it to lepanto
+	rm $i.gz			# remove the gzip
+	mv $i.sav $i			# and restore file
+done
+date >>../Changes
+me Change ../Changes
+su steve mail fwb tech <Change

@@ -1,0 +1,74 @@
+cmd/ld386/Changes
+Steve's ld386 change log, begun 6/23/93
+
+Wed Jun 23 12:24:00 1993 PDT
+ld.c
+ld.h
+message.c
+		Added "case R_DIR8:" twice to avoid "unrecognized r_type 7"
+		message for lines like "c = &a;".  Changed fatal() from int
+		to void for consistency with misc.h.
+
+Wed Jul  7 10:09:30 1993 PDT
+pass1.c
+		Conditionalized out code to look for "_s" at end of module name.
+		A user discovered that "cc foo_s.c" malfunctioned; ld did not
+		load the foo_s.o object.  The source refers to "shared
+		libraries", but these are otherwise unimplemented.
+
+Thu Jan 13 13:58:07 1994 PST
+ld.h
+		Corrected _VOID to __VOID__ to allow compilation with
+		current headers.
+message.c
+		Cleaned up usage message.
+ld.c
+ld.h
+pass1.c
+		Added "-G" option to suppress global/common warning,
+		as requested by Greg Comeau.
+
+Wed Jan 26 15:39:31 1994 PST
+ld.c
+		V4.2.1: Added "-V" option to print version number to stderr.
+ld.h
+		Added definition of VERSION.
+pass1.c
+		In addsym(), corrected bug reported by David Bustin:
+		addsym() mishandled symbol values when an object module
+		defined sections in a nonstandard order (rather than the
+		usual .text, .data, .bss, .comment).
+
+Fri Feb  4 13:15:59 1994 PST
+pass1.c
+		V4.2.2: added "if (!Gflag) ..." before another spwarn() message,
+		to suppress it if -G.
+
+Tue Mar  1 14:32:29 1994 PST
+ld.h
+ld.c
+message.c
+		V4.2.3: added compilation constant COMEAU and flag Comeau_flag,
+		set if COMEAU=1 in the environment.  Comeau_flag eliminates the
+		quotes around symbol names in messages from message.c/spmsg(),
+		for the convenience of Comeau's name demangler.
+
+Fri May 27 17:40:31 1994 PDT
+ld.c
+		V4.2.4:  In using new gcc with COHERENT ld, louis discovered
+		that ld incorrectly resolved pc-relative relocations in
+		any segment with a nonzero virtual address.  This never
+		happens with objects produced by as or cc, where pc-relative
+		relocations are in the .text segment (of course) which always
+		has a virtual address of 0 in the object.
+		But in udo's new gcc bits, crtend.o defines an .init section
+		at address 8.  This .init section contains a call to atexit(),
+		and the relocation of the atexit() address came out off by 8
+		because ld did not correctly add in the virtual address of the
+		.init segment.  Oddly, ld with the -r option did work correctly.
+
+Tue May 31 15:59:39 1994 PDT
+ld.h
+ld.c
+pass1.c
+		Changed FILEHDR to FILHDR, per corresponding <coff.h> change.

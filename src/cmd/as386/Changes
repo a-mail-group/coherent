@@ -1,0 +1,6 @@
+src/cmd/as386/Changes
+MWC i386 assembler source change log, begun 5/31/94
+
+Tue May 31 15:58:15 1994 PDT
+c_out.c
+		Changed FILEHDR to FILHDR, per corresponding <coff.h> change.

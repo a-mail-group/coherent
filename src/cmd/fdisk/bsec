@@ -1,0 +1,4 @@
+647:		s = bsec(p);
+732:			p->p_bsec = ((nc >> 2) & CYLMASK ) | ns;
+969:			printf("\n\t%3u:%u:%u ", bcyl(p), bhd(p), bsec(p));
+1173:		p->p_bsec = (((c % 1024) >> 2) & CYLMASK ) | s;

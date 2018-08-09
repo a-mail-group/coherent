@@ -1,0 +1,14 @@
+# c/.prof.386 6/9/94
+# Assumes $SRC defines C compiler root source directory.
+
+export SRCPATH=$SRC				# source path
+export MCH=i386					# machine type
+export AR=ar					# librarian
+export ARFLAGS=rcuks				# ar flags
+export CC=cc					# compiler
+export CFLAGS="-O -I$SRC/h -I$SRC/h/$MCH"	# includes compiler headers
+export OUTPUT=outcoff.o				# output writer object
+export TFLAGS="-s -t $SRC/n1/$MCH/tables"	# table generator flags
+export X=o					# object file extension
+
+# end of c/.profile

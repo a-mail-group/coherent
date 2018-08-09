@@ -1,0 +1,3 @@
+echo d.sh:
+f
+echo leaving d.sh...

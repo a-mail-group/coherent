@@ -1,0 +1,4 @@
+strip sh
+uucp -r sh mwc!~/steve/sh.fns
+me Change
+mail michael tech <Change

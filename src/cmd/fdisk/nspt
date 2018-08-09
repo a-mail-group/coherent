@@ -1,0 +1,40 @@
+47:#define	chs_to_sec(c,h,s) ((((unsigned long)(c)*nheads) + (h)) * nspt + (s) - 1)
+49:#define	sec_to_h(sec)	((unsigned)(((sec) / nspt) % nheads))
+50:#define	sec_to_s(sec)	((unsigned)(((sec) % nspt) + 1))
+54:#define	sec_upto_c(sec)	(sec_to_c((sec) + nspt * nheads - 1))
+55:#define	sec_upto_t(sec)	((unsigned)(((sec) + nspt - 1) / nspt))
+84:unsigned int	nspt;		/* Number of sectors per track.		*/
+430:		    hdparms.nspt,
+444:		    hdparms.nspt,
+482:	sdparm.nspt = hdparms.nspt;
+504:		    drivenum, sdparm.ncyl, sdparm.nhead, sdparm.nspt);
+525:		    drivenum, sdparm.ncyl, sdparm.nhead, sdparm.nspt);
+598:	nspt = get_int("Number of sectors per track", nspt, 1, 255);
+604:	cylsize = nheads * nspt;
+609:	hdparms.nspt = nspt;
+661:	     || (s == 0 || s > nspt)
+677:		    ncyls, ncyls - 1, nheads, nheads - 1, nspt, nspt);
+695:			    ncyls, nheads, nspt);
+804:	} else if (n >= nspt) {
+806:		x = n / nspt;
+880:				printf("Partitions overlap starting at track %lu.\n", base / nspt);
+884:			if (i == 0 && (base == nspt || base == cylsize))
+894:	safe = nsectors - nspt * nheads;	/* safely usable sectors */
+950:		printf("%6lu ", p->p_base / nspt);
+951:		printf("%6lu ", end / nspt);
+1137:	base = (size != 0L) ? obase : (freesize != 0) ? freestart : nspt;
+1144:			base = nspt;		/* skip first track for cyl 0 */
+1146:			base *= nspt * nheads;	/* cylinders to sectors */
+1150:		base *= nspt;			/* tracks to sectors */
+1194:			size *= nspt * nheads;	/* cylinders to sectors */
+1202:		size *= nspt * nheads;		/* cylinders to sectors */
+1207:		size *= nspt;			/* tracks to sectors */
+1227:	if (s != nspt) {
+1230:		    nspt - s);
+1233:		    nspt - s)) {
+1234:			size += nspt - s;
+1235:			s = nspt;
+1272:	    drivename, ncyls, nheads, nspt);
+1277:	    ncyls * nheads, (long)nspt * SSIZE);
+1590:	nspt = hdparms.nspt;
+1591:	cylsize = nheads * nspt;

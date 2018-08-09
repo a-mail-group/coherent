@@ -1,0 +1,145 @@
+libc/Changes
+i8086/i386 libc source change log, begun 1/26/94
+Earlier changes are in libc/Changes.1993.
+
+Thu Jan 27 12:25:56 1994 PST
+		Resolved library differences with the V4.2.r05 distribution
+		library, which was produced at MWC by nigel.  nigel
+		apparently started with V4.1.40 rather than V4.1.42,
+		see Changes.1993 for the differences.  The V4.1.43 library
+		generated for r06 with the changes detailed below is
+		recompiled from scratch with the modified sources;
+		however, because Steve does not yet have the appropriate
+		getopt.c source, the V4.1.43 library uses nigel's getopt.o.
+*
+		Extensive minor changes to many existing sources to allow
+		compilation with current COH 4.2r05 headers.
+		Rearranged directory structure for sanity:
+		moved most stdlib functions to stdlib/,
+		moved gen/malloc/ to stdlib/malloc/,
+		moved gen/ctype/ to ctype/,
+		moved most time functions from gen to time/.
+		Modified headers accordingly.
+gen/__fltused.c
+		Added to resolve external "__fltused" when linking with
+		objects compiled on Unix systems.
+gen/clock.c
+gen/difftime.c
+gen/fnmatch.c
+gen/mkfifo.c
+gen/raise.c
+		Added.
+gen/ctime.c
+		nigel's version, extensive whitespace changes in addition
+		to substantive changes from previous source.
+gen/Makefile
+		Modified as per above changes.
+stdio/Makefile
+		Deleted rename.o, now a system call; cf. sys/i386/scall.s5.
+sys/i386/setpgrp.c
+		Deleted, replaced by getpgrp.c.
+sys/i386/mscall.c
+		Added ".unixorder" to .s output.
+sys/i386/getpgrp.c
+sys/i386/sigaction.s
+sys/i386/sigjmp.s
+		Added.
+sys/i386/scall.s5
+		Added new system calls fpathconf, getgroups, getmsg,
+		pathconf, putmsg, rename, setgroups,
+		sigpending, sigprocmask, sigsuspend, sysconf;
+		all are generated automatically from scall.s5.
+sys/i386/Makefile
+		Modified as per above changes.
+time/strftime.c
+		Added.
+gen/copyright.c
+		V4.2.1: bumped copyright date to include 1994.
+
+Thu Jan 27 21:20:09 1994 PST
+time/strftime.c
+		V4.2.2: rudimentary test program revealed that 'w' and 'W'
+		formats were reversed.
+
+Thu Feb  3 15:43:27 1994 PST
+gen/getopt.c
+		V4.2.3: replaced old getopt.c source with nigel's,
+		cf. comments on 1/27/94 above.
+
+Tue Feb 15 13:48:08 1994 PST
+time/ctime.c
+		V4.2.4: change from nigel, using namechar() to forbid '+'
+		and '-' in TZ names.
+
+Wed Feb 23 10:30:28 1994 PST
+crt/i386/*.s
+crt/i387/*.s
+gen/i386/*.s
+stdlib/i386/*.s
+string/i386/*.s
+		Added ".intelorder" to .s files so that making libc.a does
+		not require setting ASFLAGS.
+sys/i386/Makefile
+		Removed ASFLAGS setting, now bogus.
+		
+Thu Jun  9 12:54:09 1994 PDT
+copyright/Makefile
+copyright/copyright.c
+		Moved copyright.c from gen to new subdirectory copyright,
+		which makes the Makefiles cleaner.
+Makefile
+*/Makefile
+*/*/Makefile
+		Rewrote Makefiles to use explicit library dependencies
+		(which old make did not support but which now works).
+		libc.a now builds without leaving any garbage whatever behind.
+
+Thu Jun  9 13:40:16 1994 PDT
+gen/Makefile
+gen/getspent.c
+		V4.2.5: added shadow password entry source from louis,
+		modified Makefile accordingly.  Requires <shadow.h>.
+
+Fri Jul  8 09:38:49 1994 PDT
+string/strdup.c
+		At udo's suggestion, modified strdup() to handle NULL arg.
+
+Fri Jul  8 10:02:56 1994 PDT
+gen/coffnlist.h
+		Modified FILEHDR to FILHDR to comply with <coff.h> change.
+
+Tue Jul 12 10:51:03 1994 PDT
+gen/getlogin.c
+		Nonsubstantive whitespace and #include changes.
+
+Wed Aug  3 15:20:34 1994 PDT
+time/Makefile
+time/mktime.c
+		V4.2.6: added mktime() from steve's source.
+
+Tue Sep 13 15:45:55 1994 PDT
+gen/Makefile
+gen/drand48.c
+		V4.2.7: Added source defining
+		[dejlmns]rand48()/lcong48()/seed48(), as per SVID drand48(lib).
+stdio/Makefile
+stdio/ctermid.c
+		Added source defining ctermid(), as per POSIX.1.
+
+Fri Oct  7 09:26:39 1994 PDT
+string/Makefile
+string/bcmp.c
+string/bcopy.c
+string/bzero.c
+		Added sources for bcmp(), bcopy(), bzero() for BSD
+		compatability, per hal's request.
+
+Wed Nov 30 11:21:21 1994 PST
+time/ctime.c
+		In scanmday(), added code to look for leading '-' for
+		dst_occur field.  User trev@asstdc.com.au (Trev Roydhouse)
+		reported a problem with DST conversion, using
+			TIMEZONE=AEST:-600:AEDT:4.1.10:-1.1.4:2:60 
+		This bug has apparently been around since V4.2.1 (1/27/94),
+		when we switched from old ctime.c to an extensively revised
+		source from nigel.

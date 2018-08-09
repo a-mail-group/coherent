@@ -1,0 +1,26 @@
+# Do_LJIII_tfms 1/27/94
+# Given HP LJIII *.tfm in current directory,
+# build *.fwt for COHERENT distribution in subdirectory fwt.
+# This changes the bonzo HP names to bonzo MWC names...
+
+rm fwt/*
+fwtable -t	crb14r8a.tfm	fwt/Cour10_B.fwt
+fwtable -t	crb1cr8a.tfm	fwt/Cour12_B.fwt
+fwtable -t	crb1cr8c.tfm	fwt/Cour12L_B.fwt
+fwtable -t	cri14r8a.tfm	fwt/Cour10_I.fwt
+fwtable -t	cri1cr8a.tfm	fwt/Cour12_I.fwt
+fwtable -t	crr14r8a.tfm	fwt/Cour10_R.fwt
+fwtable -t	crr1cr8a.tfm	fwt/Cour12_R.fwt
+fwtable -t	crr1cr8c.tfm	fwt/Cour12L_R.fwt
+fwtable -t	lpr0yr8a.tfm	fwt/Linep_R.fwt
+fwtable -t	lpr0yr8c.tfm	fwt/LinepL_R.fwt
+fwtable -t	trb0000s.tfm	fwt/CGTimes_B.fwt
+fwtable -t	tri0000s.tfm	fwt/CGTimes_I.fwt
+fwtable -t	trj0000s.tfm	fwt/CGTimes_BI.fwt
+fwtable -t	trr0000s.tfm	fwt/CGTimes_R.fwt
+fwtable -t	unb0000s.tfm	fwt/Univers_B.fwt
+fwtable -t	uni0000s.tfm	fwt/Univers_I.fwt
+fwtable -t	unj0000s.tfm	fwt/Univers_BI.fwt
+fwtable -t	unr0000s.tfm	fwt/Univers_R.fwt
+
+# end of Do_LJIII_tfms

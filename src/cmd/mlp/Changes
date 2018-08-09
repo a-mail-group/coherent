@@ -1,0 +1,162 @@
+mlp/Changes
+MLP change log begun 8/16/94
+
+Tue Aug 16 17:36:08 1994 PDT
+Makefile
+		Revised to permit make in object directory.
+header.h
+		Renamed to mlp.h.
+mlp.h
+lp.c
+lpsched.c
+lpstat.c
+spooler.c
+		Began stylistic cleanup, moving extern declarations to mlp.h.
+		In lp.c, fixed incorrect progname assignment.
+		In lpstat.c/_delete_destination, fixed close(fp) -> fclose(fp)
+		twice.  In spooler.c/log(), fixed close(fp) -> fclose(fp).
+		Changed malloc() and calloc() calls to xalloc() to check
+		error condition.  Implemented controls() and status() as
+		macros rather than functions.
+
+Wed Aug 17 15:31:39 1994 PDT
+mlp.h
+lp.c
+lpsched.c
+lpstat.c
+spooler.c
+		Continue stylistic cleanup: define manifest constants,
+		change constant lists to enumerations.  In MLP_lock(),
+		add O_CREAT flag to create nonexistent locks.
+		Deleted ftok(), now in system.
+
+Thu Aug 18 13:08:49 1994 PDT
+lp.c
+lpsched.c
+lpstat.c
+spooler.c
+		Fixed bug in MLP_unlock(): removing the lock file allowed
+		multiple processes to think they owned the same lock.
+		Moved lock files from /usr/spool/mlp/queue/LCK..[0123]
+		to /usr/spool/mlp/LCK..[0123] for benefit of lpstat.
+		Fixed stat() call bug in roll_log() and call it from main().
+		Add exit(EXIT_SUCCESS) at end of main() in each program.
+
+Fri Aug 19 15:02:21 1994 PDT
+lp.c
+		Added exit status to shutdown_spooler().  Massaged messages.
+lpsched.c
+		Removed bogus fork() in write_request(), not necessary.
+		Moved SIGHUP setting to main() for benefit of mail.
+spooler.c
+		Rewrote unpadd() more rationally.
+
+Sat Aug 20 23:02:23 1994 PDT
+*.[ch]
+		Reformatted Blatchey's atrocious spacing (was three space
+		indentation per tab), at expense of blowing diffs against old
+		sources out of the water, oh well...  Numerous other small
+		corrections in passing.
+
+Wed Aug 24 21:46:10 1994 PDT
+mlp.h
+lp.c
+lpstat.c
+spooler.c
+		Rewrote status() and controls() macros calling parameters()
+		to [gs]etstatus() and [gs]etcontrol(), and added P_* argument
+		to allow locking sequence numbers in get_seq_num();
+		previously, repeated "lp *.c &" would reuse some sequence
+		numbers, so some files would not get printed.
+lpsched.c
+		Cleaned up numerous error messages.  Added additional fork()
+		in main(), cf. Stevens reference.  Added "signalled" to wakeup()
+		to avoid sleeping excessively in main loop calling despool().
+spooler.c
+		Added loop in MLP_lock() to retry if lockf() fails with EINTR.
+
+Thu Aug 25 10:31:57 1994 PDT
+spooler.c
+		Replaced sort in queuelist() with qsort(), make its realloc()
+		reasonably efficient.  Conditionalized out ".tmp" code,
+		believed by me to be wrongheaded.
+
+Thu Aug 25 14:42:16 1994 PDT
+lp.c
+		Fixed local print.
+
+Fri Aug 26 15:46:39 1994 PDT
+*.c
+		Added usage() messages after fred's prodding.
+
+Tue Sep 13 13:21:48 1994 PDT
+spooler.c
+		In MLP_unlock(), suppress error message if MLP_lock() failed
+		to open fd successfully, as error message for that is enough.
+mlp.h
+		Added VERSION, initially V1.0.
+lp.c
+		Added -V option to print version number.
+lpsched.c
+		Added -V option to print version number.
+		Cleaned up lpstat output.
+lpstat.c
+		Added -V option to print version number.
+		Invocation as "route" previously fell through to lpstat
+		usage message after 8/26/94 change, now corrected in main().
+		Cleaned up lpstat output.
+
+Wed Sep 14 10:18:54 1994 PDT
+mlp.h
+lp.c
+lpstat.c
+spooler.c
+		V1.1: Replaced getlogin() calls with get_username().
+		Replaced system("review ...") for "display" printer with "more".
+
+Thu Sep 22 09:31:51 1994 PDT
+lpsched.c
+		V1.2: At fred's request, added description as fourth arg to
+		backend script.  Backend script args are now request number,
+		user, copies, and description.
+		Reset SIGCLD to SIG_DFL when sending mail, else mail complains.
+		Improved message printed when printer device cannot be opened.
+spooler.c
+		Reset SIGCLD to SIG_DFL when sending mail, else mail complains.
+
+Thu Sep 29 12:44:11 1994 PDT
+mlp.h
+		V1.3: at jrd's request, nonexistent status file is now created
+		rather than causing fatal error.
+
+Wed Oct  5 09:52:12 1994 PDT
+Makefile
+		Delete hpfilter, no longer shipped.
+
+Fri Oct 14 10:19:47 1994 PDT
+lp.c
+		V1.4: at Seth Giles' request, made "reprint" with no args work.
+
+Mon Oct 17 09:11:50 1994 PDT
+lp.c
+		V1.5: at jrd's suggestion, added do_i_own_it call to
+		reprint_request(), so that the user's last spooled job
+		(rather than any user's last spooled job) gets reprinted.
+lpsched.c
+		In despool_file(), changed sample description comment and
+		subscripts in curr_desc[] references below to reflect reality.
+lpstat.c
+		In cancel_all() and cancel_requests(),
+		added missing arg to do_i_own_it() call.
+spooler.c
+		In kill_printing_request(), corrected do_i_own_it() arg
+		from int to char *.
+
+Mon Nov  7 16:17:02 1994 PST
+lp.c
+		V1.6: in spool_output, changed to write e.g. file
+		/usr/spool/mlp/R* rather than /usr/spool/mlp/queue/R*,
+		then rename /usr/spool/mlp/R* to /usr/spool/mlp/queue/R*
+		when done.  Previously, lp of stdin would create
+		/usr/spool/mlp/queue/R* and the scheduler would despool it
+		before the user closed stdin.

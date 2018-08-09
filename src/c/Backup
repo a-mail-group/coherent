@@ -1,0 +1,18 @@
+# /usr/src/c/Backup 1/27/94
+# Back up C compiler source onto formatted floppy disk.
+# N.B. requires write permission on mounted disks.
+
+FD=f0
+DEV=/dev/fva0
+
+echo -n Insert disk in drive $FD and type return...
+read x
+mount $FD
+cpdir -adu . /$FD/c || (umount $FD; echo Failed, exiting.; exit 1)
+umount $FD
+df -i $DEV
+/etc/fsck $DEV
+echo Done...
+exit 0
+
+# end of Backup

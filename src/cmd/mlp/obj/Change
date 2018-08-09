@@ -1,0 +1,16 @@
+Subject: MLP bits V1.6
+
+Newer MLP bits uploaded to mwc!~/steve/mlpbin.taz and lepanto!~/mlpbin.taz.
+
+A fax from Tecor in Greece, forwarded to my by jrd, pointed out that
+"lp" command which reads input from stdin creates a queued job
+/usr/spool/mlp/queue/R*, but the MLP scheduler lpsched finds it and
+despools it before the standard input finishes providing input.  For example,
+	lp
+	<wait a bit>
+	stuff
+	<Ctrl-D>
+never prints "stuff", because the scheduler despools the job before you
+provide the input.  Now fixed, by writing the control file in
+/usr/spool/mlp/R* initially and renaming it as /usr/spool/mlp/queue/R*
+only when done.

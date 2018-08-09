@@ -1,0 +1,222 @@
+src/troff/Changes
+troff source change log begun 5/24/92
+
+Sun May 17 09:40:24 1992 PDT
+roff.h
+		Bumped VERSION to 3.2.24.
+getf.c
+		Added test for bogus names for special characters, etc.
+		after fwb typed font escape as part of special character name.
+
+Mon May 25 11:23:42 1992 PDT
+roff.h
+		Bumped VERSION to 3.2.25.
+req2.c
+		Removed debugging printf() left in by accident, oops...
+
+Wed May 27 23:39:24 1992 PDT
+roff.h
+		Bumped VERSION to 3.2.26.
+fonts.c
+fonts.h
+fwtable.c
+fwtable.h
+fwt_TFM.c
+fwt_PS.c
+		Changed int to short in font width table processor and
+		reader, so that compilation under COH386 produces bits
+		which work as expected with the font width tables.
+
+Thu May 28 15:53:49 1992 PDT
+main.c
+		Print detailed usage message on illegal arg error
+		or if new option -? is specified.
+
+Wed Jun  3 23:35:29 1992 PDT
+roff.h
+		Bumped VERSION to 3.2.26.
+		Changed ABFSIZE from 128 to 256, after user complained
+		that it was too small.
+request.c
+		Corrected bug in array bound check which caused troff
+		to core dump on arg string of precisely ABFSIZE characters.
+
+Thu Aug  6 08:35:23 1992 PDT
+main.c
+		V3.2.27: fixed temp file name code which wrote on
+		quoted string template, which causes core dump under COH4.0.
+
+Tue Jan 26 16:20:51 1993 PST
+roff.h
+		V4.0.1.
+fwtable.h
+		Deleted unused bogus definition "extern long fseek();",
+		defined correctly (as int fseek()) in new <stdio.h>.
+req1.c
+		Changed req_cu() to just do a .ul.
+		This is somewhat wrong,
+		.cu is supposed to underline spaces as well as words,
+		but it is much better than the way it worked before.
+req2.c
+		Changed req_ul() to handle ".ul 0" correctly.
+
+Wed Feb  3 17:44:05 1993 PST
+process.c
+		V4.0.2: changed local horizontal motion default unit
+		from 'u' to 'm'.  User Andrew Houghton reported that "\h'-1'"
+		did not backspace; he expected the implicit unit to
+		be ems, as in Unix.
+
+Thu Feb  4 09:54:32 1993 PST
+main.c
+		V4.0.3: fixed tempfile code to call mktemp() like it used to.
+
+Mon Mar  1 08:48:19 1993 PST
+main.c
+		V4.0.4: in main(), fixed arg processing to ignore tempfile
+		arg after "-f".
+
+Fri Mar  5 15:24:13 1993 PST
+process.c
+		V4.0.5: Deleted unnecessary "#include <ascii.h>".
+req2.c
+		Changed "#include <ascii.h>" to "#include <sys/ascii.h>".
+		In req_tl(), set font to "R".  Previously, .tl at the
+		start of a file caused troff to core dump.
+
+Tue Mar 30 14:45:56 1993 PST
+fwtable.h
+fwt_TFM.c
+		fwtable V1.4: changed "getint();" to "getword();" and
+		int -> short in several places for COH386.  Added verbose
+		usage() message.  Deleted debugging output.
+
+Wed Mar 31 12:14:41 1993 PST
+fwt_TFM.c
+		fwtable V1.5: corrected bug in writing slant value word
+		which led to incorrect escape sequence for italic fonts.
+
+Wed Apr  7 17:49:09 1993 PDT
+main.c
+		V4.0.6: at fwb's request, modified leave() to print page
+		eject even for nonzero exit status; previously, it ejected
+		the current page on success, but not on fatal errors.
+
+Fri Apr 23 14:18:10 1993 PDT
+main.c
+		V4.0.7: changed exit status for usage() from 1 to 2,
+		allowing leave() to avoid core dumping as it exits.
+
+Thu Sep  2 17:32:13 1993 CDT
+roff.h
+main.c
+req2.c
+		V4.0.8: minor hacks to allow compilation under current headers.
+
+Mon Dec 13 16:51:20 1993 PST
+misc.c
+		Changed <access.h> reference to <unistd.h> to allow compilation
+		with current headers.
+
+Wed Jun 15 14:57:59 1994 PDT
+fwtable.c
+		fwtable V1.7:  in read_header(), if the given face index is
+		larger than NFACES, the old source sprintf'ed into a
+		blank string, causing a core dump under i386 COHERENT.
+		Added a line to allocate space accordingly instead.
+
+Wed Jun 15 15:16:38 1994 PDT
+getf.c
+		V4.0.9: In scanoptdel(), added missing NUL-terminator to arg
+		string.  This fixes a bug in '\s0' reported by Gabor Zehemsky.
+
+Thu Jul  7 15:49:32 1994 PDT
+tty.c
+		V4.1.0: Changed vertical resolution computations to not
+		use half-line motions HLF and HRLF, as requested by fred.
+		Still uses escape sequences LF and RLF in some circumstances.
+		Added rambling comment about print model.
+
+Thu Sep 15 00:13:48 1994 PDT
+req1.c
+		V4.1.1: At fred's request, changed req_ft so that ".ft"
+		with no arg has the effect of ".ft P".
+
+Fri Oct 28 09:32:04 1994 PDT
+extern.c
+reg.h
+main.c
+		V4.1.2: Added predefined number register "$$" (REG nrddreg)
+		containing current process id, as requested by fred.
+req2.c
+request.h
+table.c
+		Added request ".sy" (system) as requested by fred;
+		it just passes a command line to system.
+
+Sat Apr 22 13:48:27 1995 PDT
+roff.h
+		V4.1.3: changes for Linux port.
+fwtable.c
+misc.c
+		Replaced "%r" printf() formats with vfprintf() calls.
+process.c
+		Added cast to avoid gcc warning about assignment
+		of differing pointer types.
+Makefile
+		Added $(SRC) macros to allow position-independent make
+		in object directory on system which does not support SRCPATH.
+main.c
+		Changed tempfile freopen() mode from "rwb" to ANSI form "w+b".
+		Added missing #include <unistd.h> to get R_OK.
+misc.c
+		In lib_file(), deleted bogus "register" on auto array
+		declaration.  Added #include <stdlib.h> and deleted explicit
+		calloc() declaration.  Changed conditionalization for
+		memok() call.
+fonts.c
+fwtable.c
+fwtable.h
+fwt_TFM.c
+		Minor changes to eliminate gcc noise.
+include/canon.h
+include/path.h
+lib/path.c
+		Added COHERENT system headers and library file
+		to facilitate porting.
+
+Mon Apr 24 10:21:31 PDT 1995
+roff.h
+		V4.1.4: changes for Sparc port.  Added index() definition.
+fwt_TFM.c
+		Added SEEK_SET definition to avoid Sparc <stdio.h> misfeature.
+fonts.c
+		Corrected canint(s) to canshort(s).
+
+Wed Apr 26 06:59:13 PDT 1995
+Makefile
+include/canon.h
+lib/_canon.c
+		Modified to do appropriate canonicalization for Sparc.
+fonts.c
+main.c
+misc.c
+		Added new functionality to allow roff libraries and macros
+		in local directories.  The environmental variables
+		ROFF_LIBPATH and ROFF_LIB, if found, now specify a macro
+		library path and the location of the /usr/lib/roff files.
+
+Tue May 16 23:51:21 1995 PDT
+output.c
+		V4.1.5: fixed Linux ".lf R font.fwt 9" bug reported by Fred.
+		The dev_pz() declaration in output.c said "char size"
+		but meant "char *size".  This caused Linux troff to fail,
+		dunno why COHERENT version ever worked.
+
+Fri Oct 13 12:35:52 PDT 1995
+env.h
+		V4.1.6: bumped LINSIZE; Gnu cpp.1 man page needed larger value.
+
+Sat Jun  3 17:31:35 2000 PDT
+		V4.1.7: Changed __sparc__ -> sparc, __STDC__ -> defined(__STDC__)
+		for Solaris compilation.

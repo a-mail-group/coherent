@@ -1,0 +1,6 @@
+f() { echo function f; }
+echo e.sh:
+f
+echo Executing d.sh in subshell...
+(d.sh)
+echo leaving e.sh...

@@ -1,0 +1,4 @@
+version=COHERENT
+revision=4.2
+level="12"
+echo -n '-DVERSION="'$version'" -DRELEASE="'$revision'.'$level'.jsbach26" '

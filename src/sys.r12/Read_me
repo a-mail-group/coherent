@@ -1,0 +1,10 @@
+/home/src/sys/Read_me 7/25/94
+This directory contains an r12 system source kit received 7/25/94
+on 3.5" floppy from hal.
+
+Built new system object:
+	[hack i386/version to append .SAN1]
+	cpdir -ad include /usr/include
+	mkdir conf/lib conf/*/obj
+	cd i386
+	bld

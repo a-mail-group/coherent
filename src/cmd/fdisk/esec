@@ -1,0 +1,4 @@
+652:		s = esec(p);
+736:			p->p_esec = ((nc >> 2) & CYLMASK ) | ns;
+970:			printf("%3u:%u:%u ", ecyl(p), ehd(p), esec(p));
+1249:		p->p_esec = (((c % 1024) >> 2) & CYLMASK) | s;

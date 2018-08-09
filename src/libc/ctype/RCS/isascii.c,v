@@ -1,0 +1,67 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    bin:1.2; strict;
+comment  @ * @;
+
+
+1.2
+date     93.03.03.09.48.19;  author bin;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     93.03.03.09.47.57;  author bin;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@stve 3/3/93
+Initial MWC RCS revision.
+@
+
+
+1.2
+log
+@steve 3/3/93
+Rewritten to work as expected for all int args, not just bytes and EOF.
+Similar change to <ctype.h>.
+@
+text
+@/*
+ * libc/gen/ctype/isascii.c
+ * C character handling library.
+ * isascii()
+ * Not in ANSI 4.3 but allowed by 4.13.2.
+ * Test if character is ASCII.
+ */
+
+#include <ctype.h>
+#undef	isascii
+
+int
+isascii(c) int c;
+{
+	return ((c&~0x7F)==0);
+}
+
+/* end of isascii.c */
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 1
+d12 2
+a13 1
+int isascii(c) int c;
+d15 1
+a15 1
+	return ((c&0x80)==0);
+d17 2
+@
